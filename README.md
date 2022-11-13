@@ -7,8 +7,7 @@ Rice Li 說：
 天啊！有了現成的範例後，這真的就是「工程師」也會用的開發工具吔！
 ```
 
-也期盼藉此推廣 Julia 的應用，並與網路上的朋友們一起交流分享，再請透過新增「[Issues](https://github.com/RiceZeeLi/TDWorkspaceONE/issues)
-」的方式回饋交流。
+也期盼藉此推廣 Julia 的應用，並與網路上的朋友們一起交流分享，再請透過新增「[Issues](https://github.com/RiceZeeLi/TDWorkspaceONE/issues)」的方式回饋交流。
 
 請透過 Pluto 開啟 TDWorkspaceONE.jl 來使用程式範例。關於 Julia 及 Pluto 的安裝再請參考如下的簡要說明或網路資源。
 
