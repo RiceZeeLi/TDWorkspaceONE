@@ -9,7 +9,7 @@ Rice Li 說：
 
 也期盼藉此推廣 Julia 的應用，並與網路上的朋友們一起交流分享，再請透過新增「issues」的方式回饋交流。
 
-可透過 Pluto 來開啟 TDWorkspaceONE.jl 。關於 Julia 及 Pluto 的安裝再請參考如下的簡要說明或網路資源。
+請透過 Pluto 開啟 TDWorkspaceONE.jl 來使用程式範例。關於 Julia 及 Pluto 的安裝再請參考如下的簡要說明或網路資源。
 
 ## 安裝 Julia 及 Pluto.jl (以 macOS 為例)
 Shell 的部份
