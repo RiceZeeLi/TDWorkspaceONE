@@ -24,6 +24,7 @@ begin
 	using JSONTables
 	using DataFrames
 	using XLSX
+	using Pipe
 end;
 
 # ╔═╡ 9afd7578-61e9-11ed-3be5-e32eb35c953d
@@ -32,12 +33,37 @@ md"""
 使用 Julia + Pluto + PlutoUI 做為快速雛形開發工具的程式範例
 ```
 Rice Li 說：
-天啊！有了現成的範例後，這真的就是「工程師」也會用的開發工具吔！
+有了現成的範例後，希望這可以是「工程師」也會用的開發工具！👌
 ```
 """
 
+# ╔═╡ 9bc4054a-f0d0-40f6-9260-881bfebb6cce
+md"教學使用? $(@bind isForTraining CheckBox(default = false))"
+
+# ╔═╡ 713a287f-98b8-461d-8c95-8493c9796971
+if isForTraining 
+	md"""
+# 教學摘要
+1. 這「一頁」我們來說「程式」，One Page Ahead。
+1. 說明已經有 Postman, API Explorer，為什麼還要介紹今天的內容？
+1. 簡介 Julia，並說明「表示式（Expression）」。以正確的「表達／表示」請 Julia 幫忙。
+1. 簡介 Pluto & PlutoUI，並說明 (冥王星/Pluto, 木星/Jupiter)$br Jupyter notebook $br Markdown, JavaScript, HTML, $br Interactive Programming Environment $br Meta Programming
+1. 說明 VMware Workspace ONE 的應用需求與範例中的關係
+1. 說明使用 Ubuntu 做為納管設備的原因
+1. 說明應用在 VMware Horizon 的可能性
+1. 有問題請隨時打斷，或在線上聊天室發訊息。
+	Julia solves the two language problem by combining the ease of use of Python and R with the speed of C++.
+	
+	Jupyter - the three core programming languages supported by Jupyter, which are Julia, Python and R
+"""
+end
+
 # ╔═╡ 2a093f7b-feaa-4620-b9cf-dd6a9a2a41ba
-TableOfContents(title = "內容大綱", depth = 4)
+(println("→"); true) && if isForTraining 
+	TableOfContents(title = "內容大綱", depth = 2)
+else
+	TableOfContents(title = "內容大綱", depth = 3)
+end
 
 # ╔═╡ 51175407-f3f7-4dc5-9844-e207d84e8a17
 Resource("https://julialang.org/assets/infra/logo.svg", :width => 400)
@@ -45,14 +71,14 @@ Resource("https://julialang.org/assets/infra/logo.svg", :width => 400)
 # ╔═╡ d6853197-ee2e-4ab9-bb55-de0909d3bde6
 md"# 範例程式"
 
-# ╔═╡ 9bc4054a-f0d0-40f6-9260-881bfebb6cce
-md"教學使用? $(@bind isForTraning CheckBox(default = false))"
-
 # ╔═╡ a5e8383f-8a37-468a-b20e-9dff88d5231a
-md"## 連線準備"
+md"## 環境準備"
 
 # ╔═╡ bb662f53-0b39-41e5-8e63-f193317df883
 md"### 引用套件"
+
+# ╔═╡ d47d861f-c69a-4352-a3a5-8c8456a1e301
+md"## 其本測試"
 
 # ╔═╡ bc54c11d-18df-4e04-a078-16304fd14c4a
 md"### 填入參數"
@@ -60,7 +86,7 @@ md"### 填入參數"
 # ╔═╡ f2490bce-820c-40d7-97d4-187fa29a8d49
 md"""
 請填入連接 Workspace ONE API 伺服器所需資訊： $br
-Site#: $(@bind site TextField(default = "138")) $br
+Site#: $(@bind site TextField(default = "1768")) $br
 Username: $(@bind username TextField(default = "")) $br
 Password: $(@bind password PasswordField(default = "")) $br
 Tenant Code: $(@bind code PasswordField(default = ""))
@@ -68,7 +94,7 @@ Tenant Code: $(@bind code PasswordField(default = ""))
 
 # ╔═╡ 78c94534-c233-4786-9bf6-545b8411635b
 begin
-	rsPath = isForTraning ? "./Private/Resources" : "./Resources"
+	rsPath = isForTraining ? "./Training/Resources" : "./Resources"
 	csURL = "https://cn$site.awmdm.com"
 	asURL = "https://as$site.awmdm.com"
 	token = base64encode("$username:$password")
@@ -88,26 +114,27 @@ md"""
 
 # ╔═╡ 085b10a5-1596-40a0-a705-d1088ca4e621
 md"""
-功能項目： $(@bind apiPath Select([
+功能項目： $(@bind apiPath00 Select([
 "/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch (搜尋裝置)",
 "/api/mdm/devices?searchby=SerialNumber&id=就是會找不到" => "/api/mdm/devices?searchby=SerialNumber&id=QQ (不用再給參數，就是會找不到)",
 "/api/mdm/devices" => "/api/mdm/devices (要給參數)"
 ])) $br
-其他參數： (請用 Parameter=Value 格式分成不同行輸入，程式會自動以「&」符號合併) $br $(@bind query TextField((57,5), default = "")) $br
+其他參數： (請用 Parameter=Value 格式分成不同行輸入，程式會自動以「&」符號合併) $br $(@bind parameters00 TextField((57,5), default = "")) $br
 """
 
 # ╔═╡ 55ba9af8-122a-4649-904f-585bda70776c
-md"執行測試? $(@bind runTest CheckBox())"
+md"模擬測試? $(@bind dryRun00 CheckBox(default = true)) 執行測試? $(@bind runTest CheckBox())"
 
 # ╔═╡ 9949af3e-a30d-4516-b32c-12d959be31ea
 md"### 定義函數"
 
 # ╔═╡ 3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
 begin
-	function setURL(baseURL, apiPath, query)
-		q = join(split(query, "\n"), "&")
+	(
+	function setURL(baseURL, apiPath, parameters)
+		q = join(split(strip(parameters), "\n"), "&")
 		return (length(q) > 0) ? (baseURL * apiPath * "?" * q) : (baseURL * apiPath)
-	end
+	end,
 	
 	function setHeaders(token, code)
 	    return (
@@ -116,21 +143,17 @@ begin
 	        ("Accept", "application/json"),
 	        ("Content-Type", "application/json"),
 	    )
-	end
+	end,
 
-	function makeAPICall(url, headers)
+	function makeAPICall(method, url, headers)
 	    try
-	        response = HTTP.get(url, headers)
+	        response = method(url, headers)
 	        return response.status, String(response.body)
 	    catch e
 	        return -1, "$e"
 	    end
-	end
-
-	headers = setHeaders(token, code)
-	url = setURL(asURL, apiPath, query)
-	
-	md"定義 setHeaders(), makeAPICall() 及設定 url 及 headers"
+	end,
+	)
 end
 
 # ╔═╡ e7a28bef-e18d-40f7-a8d8-38e2d87b7171
@@ -138,18 +161,22 @@ md"### 執行結果"
 
 # ╔═╡ 5efae899-77de-40a1-a6bb-4329b80702ab
 begin
+	headers = setHeaders(token, code)
 	if runTest
-		status, body = makeAPICall(url, headers)
-	else
-		status, body = -1, ""
-	end;
-	with_terminal() do
-		println("status: $status")
-		if status ≠ -1
-			print("body: ")
-			JSON3.pretty(JSON3.read(body))
+		url = setURL(asURL, apiPath00, parameters00)
+		if dryRun00
+			println(url)
 		else
-			println("body: $body")
+			status, body = makeAPICall(HTTP.get, url, headers)
+			with_terminal() do
+				println("status: $status")
+				if status ≠ -1 ≠ # ≠ \ne <tab><tab> \ge <tab><tab> ≥
+					print("body: ")
+					JSON3.pretty(JSON3.read(body))
+				else
+					println("body: $body")
+				end
+			end	
 		end
 	end
 end
@@ -163,66 +190,88 @@ LocalResource("$rsPath/Banner-01.png", :height => 80)
 # ╔═╡ 5f15aa65-5cd9-45e4-82b3-4d53096f465a
 md"""
 ### 填入參數
-功能項目: $(@bind case01 Select([
-"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch"
+功能項目: $(@bind apiPath01 Select([
+	"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch(輕量搜尋)"
 ])) $br
-輸出檔名: $(@bind case01OutputFile TextField((50, 1); default = "TDWorkspaceONE-Case01Output.xlsx")) $br
+其他參數： (請用 Parameter=Value 格式分成不同行輸入，程式會自動以「&」符號合併) $br 
+$(@bind parameters01 TextField((57,5), default = "")) $br
+輸出檔名: $(@bind outputFile01 TextField((50, 1); default = "TDWorkspaceONE-Output01.xlsx")) $br
 """
 
 # ╔═╡ 0ae787f5-a7ad-4ac3-9526-f9c990a3ad1c
-md"執行功能項目? $(@bind runCase01 CheckBox())"
+md"模擬測試? $(@bind dryRun01 CheckBox(default = true)) 執行功能項目? $(@bind runCase01 CheckBox())"
 
 # ╔═╡ 210e476f-9a76-46a6-9276-0e3caf5ddaa2
 md"### 定義函數"
 
 # ╔═╡ 51ccf417-946f-4c53-abae-9ecc3a2d30ea
 begin
-	# XLSX Supported Types are Union{Missing, Bool, Float64, Int64, Dates.Date, Dates.DateTime, Dates.Time, String} 
+	(
+	# XLSX 套件支援的型別為 Union{Missing, Bool, Float64, Int64, Dates.Date, Dates.DateTime, Dates.Time, String}
 	function isXSLXSupported(type)
-		type in [Missing, Bool, Float64, Int64, Dates.Date, Dates.DateTime, Dates.Time, String]
-	end
-	md"定義 isXSLXSupported()"
+		! occursin("Array", "$type")
+	end,
+	)
 end
 
 # ╔═╡ 5ac612cd-83a5-4eb5-8d77-a90becabb55a
 md"### 讀取資料"
 
 # ╔═╡ b446c9eb-e517-4803-a5cb-db14cdc27620
-begin
-	if runCase01
-		case01Url = asURL * case01
-		case01Status, case01Body = makeAPICall(case01Url, headers)
+if runCase01
+	url01 = setURL(asURL, apiPath01, parameters01)
+	status01, body01 = makeAPICall(HTTP.get, url01, headers)
+	if status01 == 200
+		data01 = JSON3.read(body01)
+		hasData01 = "Devices" in keys(data01)
+		if hasData01
+			table01 = jsontable(data01["Devices"])
+			df01 = DataFrame(table01)
+		end
 	else
-		case01Status, case01Body = -1, "{}"
-	end
-	data01 = JSON3.read(case01Body)
-	if "Devices" in keys(data01)
-		table01 = jsontable(data01["Devices"])
-		df01 = DataFrame(table01)
+		hasData01 = false
+		print("$status01: ")
+		println(replace(body01, r"(?s)\n.*" => s""))
 	end
 end
 
 # ╔═╡ 751c735f-aa4b-416a-8637-3e32639a9394
 md"### 處理資料"
 
+# ╔═╡ 14acd856-b638-4b69-a87b-d7c52afd400a
+runCase01 && ! dryRun01 && hasData01 && isXSLXSupported.(eltype.(eachcol(df01))) # 測試是否有被支援
+
+# ╔═╡ 5219ff79-1b39-49c9-95ae-84f85cc0d113
+# 將 XSLS 套件不支持的欄位以 JSON 字串表示
+runCase01 && ! dryRun01 && hasData01 && for i in names(df01)
+	if ! isXSLXSupported(eltype(df01[!, i]))
+		df01[!, "$(i)JSON"] = JSON3.write.(df01[!, i])
+	end
+end
+
+# ╔═╡ 1899b982-85e6-44a3-9577-928eabc63b4c
+runCase01 && ! dryRun01 && hasData01 && df01
+
 # ╔═╡ 315d90ec-2acd-4fe6-ae62-75a44b4020a6
+runCase01 && ! dryRun01 && hasData01 &&
 begin
 	#= 刪去 XSLX 套件不支手援的欄
 	isXSLXSupported.(eltype.(eachcol(df))) # 測試是否有被支援
 	select!(df, Not([:DeviceNetworkInfo, :CustomAttributes])); # 以指定欄名的方式，無法通用
 	=#
-	df01Excel = select(df01, isXSLXSupported.(eltype.(eachcol(df01))));
+	dfExcel01 = select(df01, isXSLXSupported.(eltype.(eachcol(df01)))); # 說明「；」 
 end
 
 # ╔═╡ 24c6999a-7b3c-499b-aa23-eb89f364e247
 md"### 輸出資料(寫入試算表)"
 
 # ╔═╡ db55ef9c-76d6-459f-bb30-8d9bbf3021c9
+runCase01 && ! dryRun01 && hasData01 &&
 with_terminal() do
-	case01Output = expanduser("~/tmp/$case01OutputFile")
-	rm(case01Output, force = true)
-	XLSX.writetable(case01Output, collect(eachcol(df01Excel)), names(df01Excel))
-	println("已輸出到 $case01Output")
+	output01 = expanduser("~/tmp/$outputFile01")
+	rm(output01, force = true)
+	XLSX.writetable(output01, collect(eachcol(dfExcel01)), names(dfExcel01))
+	println("已輸出到 $output01")
 end
 
 # ╔═╡ d7daea03-3e49-4f54-a7ed-e8a3e73b2460
@@ -232,76 +281,305 @@ md"## 範例二、依試算表查詢資料"
 LocalResource("$rsPath/Banner-02.png", :height => 80)
 
 # ╔═╡ 11193569-9af9-4cbb-8313-b428118e4d9d
-md"""
-### 填入參數
-功能項目: $(@bind case02 Select([
-"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch"
-])) $br
-輸入檔名: $(@bind case02InputFile TextField((50, 1); default = "TDWorkspaceONE-Case02Input.xlsx")) $br
-輸出檔名: $(@bind case02OutputFile TextField((50, 1); default = "TDWorkspaceONE-Case02Output.xlsx"))
-"""
+begin
+	預設功能清單02 = 
+	[
+		"/api/mdm/devices/extensivesearch" => "/api/mdm/devices/extensivesearch (搜索完整資料)"
+	]
+	其他參數提示02 = "(請用 Parameter={Field} 格式分成不同行輸入，程式會自動以「&」符號合併，{Field} 會以試算表同名欄位 Field 置換，且要注意大小寫須完全相同。)"
+	預設查詢參數02 = 
+	"""
+	deviceid={DeviceId}	
+	"""
+	輸出欄名提示02 = "(請分成不同行輸入欄名， 若輸入為「原有欄名 => 新的欄名」則在輸出時更改欄名。)"
+	預設輸出欄位02 = 
+	"""
+	部門
+	DeviceId => 裝置識別
+	UserName => 用戶名稱
+	Compliant => 合規與否
+	SerialNumber => 序號
+	AssetNumber => 財產編號
+	EnrollmentStatus => 註冊狀態
+	"""
+	預設輸入檔名02 = "TDWorkspaceONE-Input02.xlsx"
+	預設輸出檔名02 = "TDWorkspaceONE-Output02.xlsx"
+	
+	md"""
+	### 填入參數
+	功能項目： $(@bind apiPath02 Select(預設功能清單02)) $br
+	其他參數： $其他參數提示02 $br 
+	$(@bind parameters02 TextField((57,3), default = 預設查詢參數02)) $br
+	輸入檔名： $(@bind inputFile02 TextField((50, 1); default = 預設輸入檔名02)) $br
+	輸出檔名： $(@bind outputFile02 TextField((50, 1); default = 預設輸出檔名02)) $br
+	輸出欄名： $輸出欄名提示02 $br
+	$(@bind outputFields02 TextField((57, 10); default = 預設輸出欄位02)) $br
+	"""
+end
 
 # ╔═╡ 48929f71-047e-46ee-89b3-b1413f95fcc6
-md"執行功能項目? $(@bind runCase02 CheckBox())"
+md"模擬測試? $(@bind dryRun02 CheckBox(default = true)) 執行功能項目? $(@bind runCase02 CheckBox())"
 
 # ╔═╡ 19231aaf-7c08-4275-9176-921d15e46982
 md"### 定義函數"
 
 # ╔═╡ de4caf52-09ad-40c8-9be7-c0f404779598
 begin
-	md"定義 "
+	(
+	function replaceKeywordWithFieldValue(text, list, df, i)
+		pairs = []
+		for j in list
+			p = j
+			v = df[i, p]
+			# r{DeviceId} => s"12345"
+			push!(pairs, eval(Meta.parse("r\"{$p}\" => s\"$v\"")))
+		end
+		println(pairs)
+		@pipe strip(text) |> replace(_, pairs...)
+	end,
+
+	function getKeywordList(parameters)
+		x = [
+			r"(?m)^[^{}]*$" => s"",
+			r"(?m)^.*=" => s"", 
+			r"(?m)[{}]" => s""
+		]
+		@pipe strip(parameters) |> split(replace(_, x...), '\n') |> filter(!isempty, _)
+	end,
+	
+	function updateDFWithQueryResults(df, apiPath, parameters, headers)
+
+		results = []
+		println("讀入筆數： $(nrow(df))")
+
+		list = getKeywordList(parameters)
+	
+		for i in 1:nrow(df)
+			# println(df[i, "DeviceId"])
+			# println(df[i, Symbol("DeviceId")])
+			# println(df[!, "DeviceId"][i])
+			u = setURL(asURL, apiPath, strip(parameters))
+			url = replaceKeywordWithFieldValue(u, list, df, i)
+			if dryRun02
+				println(url)
+			else
+				status, body = makeAPICall(HTTP.get, url, headers)
+				if status == 200
+					data = JSON3.read(body)
+					hasData = "Devices" in keys(data)
+					if hasData
+						table = jsontable(data["Devices"])
+						x = DataFrame(table)
+						e = select(x, isXSLXSupported.(eltype.(eachcol(x))))
+						push!(results, e)
+					end
+				else
+					print("$status: ")
+					println(replace(body, r"\n.*" => s"")) # 自動標色有問題
+				end
+			end
+		end 
+
+		if length(results) > 0
+			dfX = vcat(results..., cols = :union)			
+			dfJ = leftjoin(df, dfX, on = [:DeviceId	 => :DeviceId], makeunique = true)
+			return dfJ
+		else
+			return df
+		end
+	end,
+
+	function getFieldList(fields)
+		@pipe strip(fields) |> replace(_, r" *=>.*" => "") |> split(_, '\n')
+	end,
+
+	function getFieldMappingList(fields)
+		pairs = [
+			r"(?m)^[^=>\n]*(?!=>)[^=>]*$" => s"",
+			r"(?m)^" => s"\"",
+			r"(?m) *=> *" => s"\" => \"",
+			r"(?m)$" => s"\""
+		]
+		expression = @pipe strip(fields) |> replace(_, pairs...) |> split(_, '\n') |> filter(!isempty, _) |> ("Dict(" * join(_, ",") * ")") |> Meta.parse
+		eval(expression)
+	end,
+
+	)
 end
+
+# ╔═╡ 05035b0d-6440-4137-9d36-c411e8c3438a
+getFieldList(outputFields02)
+
+# ╔═╡ f88c3742-35ac-4fea-b966-63009530b323
+getFieldMappingList(outputFields02)
 
 # ╔═╡ d70c8e75-3ad2-48e4-b25d-0e7ed9e052c7
 md"### 讀取資料"
 
-# ╔═╡ b9940643-7759-40a0-8d74-4e2a38409b43
+# ╔═╡ 5cc55004-a7e6-4f9e-9e8b-cbbcbc46bb99
+if runCase02
+	input02 = expanduser("~/tmp/$inputFile02")
+	df02 = DataFrame(XLSX.readtable(input02, "Sheet1", first_row = 1))
+end
 
+# ╔═╡ b9940643-7759-40a0-8d74-4e2a38409b43
+if runCase02
+	result02 = updateDFWithQueryResults(df02, apiPath02, parameters02, headers)
+end
+
+# ╔═╡ 5e77e163-b055-408a-8655-968d6ff40d53
+runCase02 && result02
 
 # ╔═╡ 6a4d19fa-204d-42e6-969c-f69beea8df36
 md"### 處理資料"
 
-# ╔═╡ 014d4977-5dff-457e-ada8-18502ad8c9c1
+# ╔═╡ 48787c10-5cc0-403a-b0f2-ef1e25db73cb
+if runCase02 && ! dryRun02
+	println(outputFields02)
+	hasData02 = ncol(result02) > ncol(df02)
+	if hasData02
+		# 將 XSLS 不支持的欄位以 JSON 字串表示
+		for i in names(result02)
+			if ! isXSLXSupported(eltype(result02[!, i]))
+				result02[!, i*"JSON"] = JSON3.write.(result02[!, i])
+			end
+		end
+		# 挑選欄位
+		dfExcel02 = select(result02, getFieldList(outputFields02))
+		# 更改欄名
+		# 參考語法： names!(df, [:c1,:c2,:c3]) (all) 或 rename!(df, Dict(:c1 => :newCol))
+		rename!(dfExcel02, getFieldMappingList(outputFields02))
+	end
+end;
 
+# ╔═╡ 73d5db2a-c2ff-41af-849c-b2aa76198d5b
+runCase02 && ! dryRun02 && hasData02 && dfExcel02
+
+# ╔═╡ 1a9afe1a-1236-4840-9eb7-50516de8194a
+md"### 輸出資料(寫入試算表)"
+
+# ╔═╡ 9a0d9238-b1a7-4a7d-9ed6-d7cc356b202e
+runCase02 && ! dryRun02 && hasData02 &&
+with_terminal() do
+	output02 = expanduser("~/tmp/$outputFile02")
+	rm(output02, force = true)
+	XLSX.writetable(output02, collect(eachcol(dfExcel02)), names(dfExcel02))
+	println("已輸出到 $output02")
+end
 
 # ╔═╡ 99938645-2346-4962-b287-1a9ac47b631d
-md"## 範例三、依試算表更新資料"
+md"## 範例三、依試算表執行指令"
 
 # ╔═╡ 13704898-ba73-4505-9954-93c3e2c0cf92
 LocalResource("$rsPath/Banner-03.png", :height => 80)
 
 # ╔═╡ 53355cb0-0293-49e8-8450-869fa269225d
-md"""
-### 填入參數
-功能項目: $(@bind case03 Select([
-"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch"
-])) $br
-輸入檔名: $(@bind case03InputFile TextField((50, 1); default = "TDWorkspaceONE-Case03Input.xlsx")) $br
-輸出檔名: $(@bind case03OutputFile TextField((50, 1); default = "TDWorkspaceONE-Case03Output.xlsx"))
-"""
+begin
+	預設功能清單03 = 
+	[
+		"/api/mdm/devices/{DeviceId}/commands" => "/api/mdm/devices/{DeviceId}/commands (執行指令)"
+	]
+	其他參數提示03 = "(請用 Parameter={Field} 格式分成不同行輸入，程式會自動以「&」符號合併，{Field} 會以試算表同名欄位 Field 置換，且要注意大小寫須完全相同。若只有)"
+	預設查詢參數03 = 
+	"""
+	deviceid={DeviceId}
+	command=DeviceQuery
+	"""
+	輸出欄名提示03 = "(請分成不同行輸入欄名， 若輸入為「原有欄名 => 新的欄名」則在輸出時更改欄名。)"
+	預設輸出欄位03 = 
+	"""
+	部門
+	DeviceId => 裝置識別
+	Status => 結果
+	"""
+	預設輸入檔名03 = "TDWorkspaceONE-Input03.xlsx"
+	預設輸出檔名03 = "TDWorkspaceONE-Output03.xlsx"
+	
+	md"""
+	### 填入參數
+	功能項目： $(@bind apiPath03 Select(預設功能清單03)) $br
+	其他參數： $其他參數提示03 $br
+	$(@bind parameters03 TextField((57,3), default = 預設查詢參數03)) $br
+	輸入檔名： $(@bind inputFile03 TextField((50, 1); default = 預設輸入檔名03)) $br
+	輸出檔名： $(@bind outputFile03 TextField((50, 1); default = 預設輸出檔名03)) $br
+	輸出欄名： $輸出欄名提示03 $br
+	$(@bind outputFields03 TextField((57, 10); default = 預設輸出欄位03)) $br
+	"""
+end
 
 # ╔═╡ 1a464fd6-c2c0-4cd3-a363-f84f8dcc997c
-md"執行功能項目? $(@bind runCase03 CheckBox())"
+md"模擬測試? $(@bind dryRun03 CheckBox(default = true)) 執行功能項目? $(@bind runCase03 CheckBox())"
 
 # ╔═╡ 2b731f3a-d345-4c26-8b7f-ec1f80f7c070
 md"### 定義函數"
 
 # ╔═╡ b768650e-2338-43f7-83c6-9343a79afe15
 begin
-	md"定義 "
+	(
+	function updateDFWithCommandResults(df, apiPath, parameters, headers)
+
+		results = []
+		println("讀入筆數： $(nrow(df))")
+
+		list = getKeywordList(parameters)
+
+		! ("Status" in names(df)) && insertcols!(df, "Status" => 0)
+		
+		for i in 1:nrow(df)
+			u = setURL(asURL, apiPath, parameters)
+			url = replaceKeywordWithFieldValue(u, list, df, i)
+			if dryRun03
+				df[i, "Status"] = 0
+				println(url)
+			else
+				status, body = makeAPICall(HTTP.post, url, headers)
+				df[i, "Status"] = status
+			end
+		end 
+
+		return df
+	end,
+	)
 end
 
 # ╔═╡ f05c2758-df02-4e89-be91-3f00f4f55472
-md"### 讀取資料"
+md"### 執行指令"
+
+# ╔═╡ 6beaed3c-b7aa-4c41-a977-5ca7c64ed756
+runCase03 && begin
+	input03 = expanduser("~/tmp/$inputFile03")
+	df03 = DataFrame(XLSX.readtable(input03, "Sheet1", first_row = 1))
+end
 
 # ╔═╡ 2f0a9927-76af-42e8-92ac-191550656a55
-
+runCase03 && begin
+	result03 = updateDFWithCommandResults(df03, apiPath03, parameters03, headers)
+end
 
 # ╔═╡ df7c921f-4cef-4246-94a9-5b1532cb0eed
 md"### 處理資料"
 
 # ╔═╡ 2dc7b708-7c97-4676-803d-8f0c4dd0eade
+runCase03 && ! dryRun03 && begin
+	println(outputFields03)
+	# 挑選欄位
+	dfExcel03 = select(result03, getFieldList(outputFields03))
+	# 更改欄名
+	# 參考語法： names!(df, [:c1,:c2,:c3]) (all) 或 rename!(df, Dict(:c1 => :newCol))
+	rename!(dfExcel03, getFieldMappingList(outputFields03))
+end
 
+# ╔═╡ 3160896c-eae4-4758-9aa8-308cf067a25f
+md"### 輸出資料(寫入試算表)"
+
+# ╔═╡ 4e104b36-a809-4094-9163-6cff67eb9db4
+runCase03 && ! dryRun03 &&
+with_terminal() do
+	output03 = expanduser("~/tmp/$outputFile03")
+	rm(output03, force = true)
+	XLSX.writetable(output03, collect(eachcol(dfExcel03)), names(dfExcel03))
+	println("已輸出到 $output03")
+end
 
 # ╔═╡ 66773ae8-6e8c-4949-9082-a19463215051
 md"""
@@ -383,6 +661,7 @@ md"""
 1. [Getting Started with Workspace ONE Intelligence APIs: Workspace ONE Operational Tutorial | VMware](https://techzone.vmware.com/getting-started-workspace-one-intelligence-apis-workspace-one-operational-tutorial#introduction-b)
 1. [Use API server URL for Workspace ONE UEM REST API calls (82724)](https://kb.vmware.com/s/article/82724)
 1. [Workspace ONE UEM API Explorer (as1174)](https://as1174.awmdm.com/api/help/#!/apis)
+1. [Enroll Your Linux Devices](https://docs.vmware.com/en/VMware-Workspace-ONE-UEM/services/Linux_Device_Management/GUID-C155A8D9-039C-4CDB-9694-4B839F1E3CD7.html)
 
 ## eSIM
 
@@ -390,9 +669,16 @@ md"""
 
 ## Julia
 1. [How To Make REST API Calls In Julia | CodeHandbook](https://codehandbook.org/make-rest-api-calls-julia/)
+1. [Introduction - Julia language: a concise tutorial](https://syl1.gitbook.io/julia-language-a-concise-tutorial/)
+1. [Julia Documentation · The Julia Language](https://docs.julialang.org/en/v1/)
 1. [PlutoUI.jl](https://docs.juliahub.com/PlutoUI/abXFp/0.7.22/)
 1. [JSON3.jl](https://quinnj.github.io/JSON3.jl/stable/)
+1. [Working with nested JSON strings/files in Julia - Julia Community 🟣](https://forem.julialang.org/atantos/working-with-nested-json-stringsfiles-in-julia-42a7)
 1. [HTTP.jl](https://juliaweb.github.io/HTTP.jl/stable/)
+1. [Regex Tutorial - Turning Modes On and Off for Only Part of The Regular Expression](https://www.regular-expressions.info/modifiers.html)
+1. [正規表示式 - 維基百科，自由的百科全書](https://zh.m.wikipedia.org/zh-tw/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)
+1. [JuliaProgrammingForNervousBeginners/Course Notes/Translation/Traditional Chinese at main · ysaereve/JuliaProgrammingForNervousBeginners](https://github.com/ysaereve/JuliaProgrammingForNervousBeginners/tree/main/Course%20Notes/Translation/Traditional%20Chinese)
+1. [Unicode Input · The Julia Language](https://docs.julialang.org/en/v1/manual/unicode-input/)
 1. [Julia Taiwan | Facebook](https://www.facebook.com/groups/JuliaTaiwan)
 """
 
@@ -405,6 +691,7 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
 JSONTables = "b9914132-a727-11e9-1322-f18e41205b0b"
+Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 XLSX = "fdbf4ff8-1666-58a4-91e7-1b58723a45e0"
 
@@ -413,6 +700,7 @@ DataFrames = "~1.4.2"
 HTTP = "~1.5.3"
 JSON3 = "~1.11.1"
 JSONTables = "~1.0.3"
+Pipe = "~1.3.0"
 PlutoUI = "~0.7.48"
 XLSX = "~0.8.4"
 """
@@ -697,6 +985,11 @@ git-tree-sha1 = "cceb0257b662528ecdf0b4b4302eb00e767b38e7"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "2.5.0"
 
+[[deps.Pipe]]
+git-tree-sha1 = "6842804e7867b115ca9de748a0cf6b364523c16d"
+uuid = "b98c9c47-44ae-5843-9183-064241ee97a0"
+version = "1.3.0"
+
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -870,14 +1163,16 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 
 # ╔═╡ Cell order:
 # ╟─9afd7578-61e9-11ed-3be5-e32eb35c953d
+# ╟─9bc4054a-f0d0-40f6-9260-881bfebb6cce
+# ╟─713a287f-98b8-461d-8c95-8493c9796971
 # ╟─2a093f7b-feaa-4620-b9cf-dd6a9a2a41ba
 # ╟─51175407-f3f7-4dc5-9844-e207d84e8a17
 # ╟─d6853197-ee2e-4ab9-bb55-de0909d3bde6
-# ╟─9bc4054a-f0d0-40f6-9260-881bfebb6cce
 # ╟─a5e8383f-8a37-468a-b20e-9dff88d5231a
 # ╟─bb662f53-0b39-41e5-8e63-f193317df883
 # ╠═0bb3be4d-ffa1-4958-a482-a3109e3b72e5
-# ╠═bc54c11d-18df-4e04-a078-16304fd14c4a
+# ╟─d47d861f-c69a-4352-a3a5-8c8456a1e301
+# ╟─bc54c11d-18df-4e04-a078-16304fd14c4a
 # ╟─f2490bce-820c-40d7-97d4-187fa29a8d49
 # ╟─78c94534-c233-4786-9bf6-545b8411635b
 # ╟─a3304bb2-f890-4b69-9320-18b64d626dd2
@@ -890,12 +1185,15 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─29cf395d-b1fe-4379-b1df-c1aef99a1a80
 # ╟─2fcaa116-9f3b-4e61-9c17-4dbadfe25d5d
 # ╠═5f15aa65-5cd9-45e4-82b3-4d53096f465a
-# ╠═0ae787f5-a7ad-4ac3-9526-f9c990a3ad1c
+# ╟─0ae787f5-a7ad-4ac3-9526-f9c990a3ad1c
 # ╟─210e476f-9a76-46a6-9276-0e3caf5ddaa2
-# ╠═51ccf417-946f-4c53-abae-9ecc3a2d30ea
+# ╟─51ccf417-946f-4c53-abae-9ecc3a2d30ea
 # ╟─5ac612cd-83a5-4eb5-8d77-a90becabb55a
 # ╠═b446c9eb-e517-4803-a5cb-db14cdc27620
 # ╟─751c735f-aa4b-416a-8637-3e32639a9394
+# ╠═14acd856-b638-4b69-a87b-d7c52afd400a
+# ╠═5219ff79-1b39-49c9-95ae-84f85cc0d113
+# ╠═1899b982-85e6-44a3-9577-928eabc63b4c
 # ╠═315d90ec-2acd-4fe6-ae62-75a44b4020a6
 # ╟─24c6999a-7b3c-499b-aa23-eb89f364e247
 # ╠═db55ef9c-76d6-459f-bb30-8d9bbf3021c9
@@ -903,27 +1201,37 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─07c453d8-5973-4618-94da-3818542b2dc7
 # ╟─11193569-9af9-4cbb-8313-b428118e4d9d
 # ╟─48929f71-047e-46ee-89b3-b1413f95fcc6
-# ╠═19231aaf-7c08-4275-9176-921d15e46982
+# ╟─19231aaf-7c08-4275-9176-921d15e46982
 # ╠═de4caf52-09ad-40c8-9be7-c0f404779598
+# ╠═05035b0d-6440-4137-9d36-c411e8c3438a
+# ╠═f88c3742-35ac-4fea-b966-63009530b323
 # ╟─d70c8e75-3ad2-48e4-b25d-0e7ed9e052c7
+# ╠═5cc55004-a7e6-4f9e-9e8b-cbbcbc46bb99
 # ╠═b9940643-7759-40a0-8d74-4e2a38409b43
+# ╠═5e77e163-b055-408a-8655-968d6ff40d53
 # ╟─6a4d19fa-204d-42e6-969c-f69beea8df36
-# ╠═014d4977-5dff-457e-ada8-18502ad8c9c1
-# ╟─99938645-2346-4962-b287-1a9ac47b631d
+# ╠═48787c10-5cc0-403a-b0f2-ef1e25db73cb
+# ╠═73d5db2a-c2ff-41af-849c-b2aa76198d5b
+# ╟─1a9afe1a-1236-4840-9eb7-50516de8194a
+# ╠═9a0d9238-b1a7-4a7d-9ed6-d7cc356b202e
+# ╠═99938645-2346-4962-b287-1a9ac47b631d
 # ╟─13704898-ba73-4505-9954-93c3e2c0cf92
 # ╟─53355cb0-0293-49e8-8450-869fa269225d
 # ╟─1a464fd6-c2c0-4cd3-a363-f84f8dcc997c
 # ╟─2b731f3a-d345-4c26-8b7f-ec1f80f7c070
-# ╠═b768650e-2338-43f7-83c6-9343a79afe15
+# ╟─b768650e-2338-43f7-83c6-9343a79afe15
 # ╟─f05c2758-df02-4e89-be91-3f00f4f55472
+# ╠═6beaed3c-b7aa-4c41-a977-5ca7c64ed756
 # ╠═2f0a9927-76af-42e8-92ac-191550656a55
 # ╟─df7c921f-4cef-4246-94a9-5b1532cb0eed
 # ╠═2dc7b708-7c97-4676-803d-8f0c4dd0eade
+# ╟─3160896c-eae4-4758-9aa8-308cf067a25f
+# ╠═4e104b36-a809-4094-9163-6cff67eb9db4
 # ╟─66773ae8-6e8c-4949-9082-a19463215051
 # ╠═2b62de3a-8d99-4e44-b8fe-aff11b39a3b1
 # ╠═f6084608-91db-4a3f-b124-e03a6adb4df0
 # ╠═2c4d8b69-35c0-46f7-be15-46deff26238c
-# ╠═4ff585eb-f729-4897-a184-ae17839ca133
+# ╟─4ff585eb-f729-4897-a184-ae17839ca133
 # ╠═bbdcd891-3cab-43dc-a29a-a5000f96f0a0
 # ╠═89e69050-98e6-43d6-9d77-c8391c7f4e27
 # ╟─22865dbe-2d84-4aea-a481-453645e5468b
