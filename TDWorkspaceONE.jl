@@ -682,6 +682,7 @@ md"""
 1. [正規表示式 - 維基百科，自由的百科全書](https://zh.m.wikipedia.org/zh-tw/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)
 1. [JuliaProgrammingForNervousBeginners/Course Notes/Translation/Traditional Chinese at main · ysaereve/JuliaProgrammingForNervousBeginners](https://github.com/ysaereve/JuliaProgrammingForNervousBeginners/tree/main/Course%20Notes/Translation/Traditional%20Chinese)
 1. [Unicode Input · The Julia Language](https://docs.julialang.org/en/v1/manual/unicode-input/)
+1. [RiceZeeLi/TDWorkspaceONE 🍅](https://github.com/RiceZeeLi/TDWorkspaceONE)
 1. [Julia Taiwan | Facebook 🍅](https://www.facebook.com/groups/JuliaTaiwan) 
 """
 
