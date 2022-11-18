@@ -4,7 +4,7 @@
 
 ```
 Rice Li 說：
-天啊！有了現成的範例後，這真的就是「工程師」也會用的開發工具吔！
+有了現成的範例後，希望這可以是「工程師」也會用的開發工具！👌
 ```
 
 也期盼藉此推廣 Julia 的應用，並與網路上的朋友們一起交流分享，再請透過新增「[Issues](https://github.com/RiceZeeLi/TDWorkspaceONE/issues)」的方式回饋交流。
