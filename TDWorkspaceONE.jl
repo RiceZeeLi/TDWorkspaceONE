@@ -16,7 +16,7 @@ end
 
 # ╔═╡ 0bb3be4d-ffa1-4958-a482-a3109e3b72e5
 begin
-	using PlutoUI
+	using PlutoUI # 🍅 Live docs
 	using Base64
 	using Dates
 	using HTTP
@@ -51,7 +51,7 @@ if isForTraining
 1. 說明 VMware Workspace ONE 的應用需求與範例中的關係
 1. 說明使用 Ubuntu 做為納管設備的原因
 1. 說明應用在 VMware Horizon 的可能性
-1. 有問題請隨時打斷，或在線上聊天室發訊息。
+1. 一起找「🍅」有問題請隨時打斷，或在線上聊天室發訊息。
 	Julia solves the two language problem by combining the ease of use of Python and R with the speed of C++.
 	
 	Jupyter - the three core programming languages supported by Jupyter, which are Julia, Python and R
@@ -59,7 +59,7 @@ if isForTraining
 end
 
 # ╔═╡ 2a093f7b-feaa-4620-b9cf-dd6a9a2a41ba
-(println("→"); true) && if isForTraining 
+(println("🍅"); true) && if isForTraining 
 	TableOfContents(title = "內容大綱", depth = 2)
 else
 	TableOfContents(title = "內容大綱", depth = 3)
@@ -148,12 +148,12 @@ begin
 	function makeAPICall(method, url, headers)
 	    try
 	        response = method(url, headers)
-	        return response.status, String(response.body)
+	        return response.status, String(response.body) # 🍅 multiple return values 
 	    catch e
 	        return -1, "$e"
 	    end
 	end,
-	)
+	) # 🍅 (tuple of functions)
 end
 
 # ╔═╡ e7a28bef-e18d-40f7-a8d8-38e2d87b7171
@@ -209,7 +209,7 @@ begin
 	(
 	# XLSX 套件支援的型別為 Union{Missing, Bool, Float64, Int64, Dates.Date, Dates.DateTime, Dates.Time, String}
 	function isXSLXSupported(type)
-		! occursin("Array", "$type")
+		! occursin("Array", "$type") # 🍅 interpolation
 	end,
 	)
 end
@@ -239,7 +239,7 @@ end
 md"### 處理資料"
 
 # ╔═╡ 14acd856-b638-4b69-a87b-d7c52afd400a
-runCase01 && ! dryRun01 && hasData01 && isXSLXSupported.(eltype.(eachcol(df01))) # 測試是否有被支援
+runCase01 && ! dryRun01 && hasData01 && isXSLXSupported.(eltype.(eachcol(df01))) # 測試是否有被支援 🍅 && logical and
 
 # ╔═╡ 5219ff79-1b39-49c9-95ae-84f85cc0d113
 # 將 XSLS 套件不支持的欄位以 JSON 字串表示
@@ -259,8 +259,8 @@ begin
 	isXSLXSupported.(eltype.(eachcol(df))) # 測試是否有被支援
 	select!(df, Not([:DeviceNetworkInfo, :CustomAttributes])); # 以指定欄名的方式，無法通用
 	=#
-	dfExcel01 = select(df01, isXSLXSupported.(eltype.(eachcol(df01)))); # 說明「；」 
-end
+	dfExcel01 = select(df01, isXSLXSupported.(eltype.(eachcol(df01))))
+end # 說明「；」 
 
 # ╔═╡ 24c6999a-7b3c-499b-aa23-eb89f364e247
 md"### 輸出資料(寫入試算表)"
@@ -335,7 +335,7 @@ begin
 			push!(pairs, eval(Meta.parse("r\"{$p}\" => s\"$v\"")))
 		end
 		println(pairs)
-		@pipe strip(text) |> replace(_, pairs...)
+		@pipe strip(text) |> replace(_, pairs...) # 🍅 pipe & _
 	end,
 
 	function getKeywordList(parameters)
@@ -343,7 +343,7 @@ begin
 			r"(?m)^[^{}]*$" => s"",
 			r"(?m)^.*=" => s"", 
 			r"(?m)[{}]" => s""
-		]
+		] # 🍅 regex
 		@pipe strip(parameters) |> split(replace(_, x...), '\n') |> filter(!isempty, _)
 	end,
 	
@@ -400,12 +400,15 @@ begin
 			r"(?m) *=> *" => s"\" => \"",
 			r"(?m)$" => s"\""
 		]
-		expression = @pipe strip(fields) |> replace(_, pairs...) |> split(_, '\n') |> filter(!isempty, _) |> ("Dict(" * join(_, ",") * ")") |> Meta.parse
-		eval(expression)
+		expression = @pipe strip(fields) |> replace(_, pairs...) |> split(_, '\n') |> filter(!isempty, _) |> ("Dict(" * join(_, ",") * ")") |> Meta.parse # 🍅 meta programming
+		eval(expression) # 🍅 evaluation
 	end,
 
 	)
 end
+
+# ╔═╡ 4b116a2c-3c9a-47fc-9e91-7668d2f05333
+Print(outputFields02) # 🍅 PlutoUI Live docs
 
 # ╔═╡ 05035b0d-6440-4137-9d36-c411e8c3438a
 getFieldList(outputFields02)
@@ -450,7 +453,7 @@ if runCase02 && ! dryRun02
 		# 參考語法： names!(df, [:c1,:c2,:c3]) (all) 或 rename!(df, Dict(:c1 => :newCol))
 		rename!(dfExcel02, getFieldMappingList(outputFields02))
 	end
-end;
+end
 
 # ╔═╡ 73d5db2a-c2ff-41af-849c-b2aa76198d5b
 runCase02 && ! dryRun02 && hasData02 && dfExcel02
@@ -679,7 +682,7 @@ md"""
 1. [正規表示式 - 維基百科，自由的百科全書](https://zh.m.wikipedia.org/zh-tw/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)
 1. [JuliaProgrammingForNervousBeginners/Course Notes/Translation/Traditional Chinese at main · ysaereve/JuliaProgrammingForNervousBeginners](https://github.com/ysaereve/JuliaProgrammingForNervousBeginners/tree/main/Course%20Notes/Translation/Traditional%20Chinese)
 1. [Unicode Input · The Julia Language](https://docs.julialang.org/en/v1/manual/unicode-input/)
-1. [Julia Taiwan | Facebook](https://www.facebook.com/groups/JuliaTaiwan)
+1. [Julia Taiwan | Facebook 🍅](https://www.facebook.com/groups/JuliaTaiwan) 
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
@@ -1179,15 +1182,15 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─085b10a5-1596-40a0-a705-d1088ca4e621
 # ╟─55ba9af8-122a-4649-904f-585bda70776c
 # ╟─9949af3e-a30d-4516-b32c-12d959be31ea
-# ╟─3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
+# ╠═3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
 # ╟─e7a28bef-e18d-40f7-a8d8-38e2d87b7171
-# ╟─5efae899-77de-40a1-a6bb-4329b80702ab
+# ╠═5efae899-77de-40a1-a6bb-4329b80702ab
 # ╟─29cf395d-b1fe-4379-b1df-c1aef99a1a80
 # ╟─2fcaa116-9f3b-4e61-9c17-4dbadfe25d5d
-# ╠═5f15aa65-5cd9-45e4-82b3-4d53096f465a
+# ╟─5f15aa65-5cd9-45e4-82b3-4d53096f465a
 # ╟─0ae787f5-a7ad-4ac3-9526-f9c990a3ad1c
 # ╟─210e476f-9a76-46a6-9276-0e3caf5ddaa2
-# ╟─51ccf417-946f-4c53-abae-9ecc3a2d30ea
+# ╠═51ccf417-946f-4c53-abae-9ecc3a2d30ea
 # ╟─5ac612cd-83a5-4eb5-8d77-a90becabb55a
 # ╠═b446c9eb-e517-4803-a5cb-db14cdc27620
 # ╟─751c735f-aa4b-416a-8637-3e32639a9394
@@ -1203,6 +1206,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─48929f71-047e-46ee-89b3-b1413f95fcc6
 # ╟─19231aaf-7c08-4275-9176-921d15e46982
 # ╠═de4caf52-09ad-40c8-9be7-c0f404779598
+# ╠═4b116a2c-3c9a-47fc-9e91-7668d2f05333
 # ╠═05035b0d-6440-4137-9d36-c411e8c3438a
 # ╠═f88c3742-35ac-4fea-b966-63009530b323
 # ╟─d70c8e75-3ad2-48e4-b25d-0e7ed9e052c7
