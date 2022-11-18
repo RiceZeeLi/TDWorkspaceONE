@@ -245,7 +245,7 @@ runCase01 && ! dryRun01 && hasData01 && isXSLXSupported.(eltype.(eachcol(df01)))
 # 將 XSLS 套件不支持的欄位以 JSON 字串表示
 runCase01 && ! dryRun01 && hasData01 && for i in names(df01)
 	if ! isXSLXSupported(eltype(df01[!, i]))
-		df01[!, "$(i)JSON"] = JSON3.write.(df01[!, i])
+		df01[!, "$(i)JSON"] = JSON3.write.(df01[!, i]) # 🍅 JSON3.write Live docs
 	end
 end
 
@@ -335,7 +335,7 @@ begin
 			push!(pairs, eval(Meta.parse("r\"{$p}\" => s\"$v\"")))
 		end
 		println(pairs)
-		@pipe strip(text) |> replace(_, pairs...) # 🍅 pipe & _
+		@pipe strip(text) |> replace(_, pairs...) # 🍅 macro pipe & _
 	end,
 
 	function getKeywordList(parameters)
