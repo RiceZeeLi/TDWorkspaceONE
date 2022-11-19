@@ -106,45 +106,16 @@ begin
 	("Site#" => site, "csURL" => csURL, "asURL" => asURL, "username" => username)
 end
 
-# ╔═╡ b27ab7df-8152-4678-8ce5-50fe5e1a665d
-md"### 定義函數"
-
-# ╔═╡ e035fb8d-a229-4ecf-b442-82e1892b6057
-begin
-	(
-		function ln(text, link)
-		string="md\"[$text]($link)\""
-		return(eval(Meta.parse(string)))
-		end,
-	)
-end
-
-# ╔═╡ a3304bb2-f890-4b69-9320-18b64d626dd2
-md"""
-### 測試連線 (CN$site)
-- $(ln("Workspace ONE UEM Console", csURL))
-- $(ln("Workspace ONE UEM API Explorer", asURL*"/api/help/#!/apis"))
-"""
-
-# ╔═╡ 085b10a5-1596-40a0-a705-d1088ca4e621
-md"""
-功能項目： $(@bind apiPath00 Select([
-"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch (搜尋裝置)",
-"/api/mdm/devices?searchby=SerialNumber&id=就是會找不到" => "/api/mdm/devices?searchby=SerialNumber&id=QQ (不用再給參數，就是會找不到)",
-"/api/mdm/devices" => "/api/mdm/devices (要給參數)"
-])) $br
-其他參數： (請用 Parameter=Value 格式分成不同行輸入，程式會自動以「&」符號合併) $br $(@bind parameters00 TextField((57,5), default = "")) $br
-"""
-
-# ╔═╡ 55ba9af8-122a-4649-904f-585bda70776c
-md"模擬測試? $(@bind dryRun00 CheckBox(default = true)) 執行測試? $(@bind runTest CheckBox())"
-
 # ╔═╡ 9949af3e-a30d-4516-b32c-12d959be31ea
 md"### 定義函數"
 
 # ╔═╡ 3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
-begin
-	( # 🍅 tuple of functions, (f1, f2, f3)
+( # 🍅 tuple of functions, (f1, f2, f3)
+		function ln(text, link)
+		string="md\"[$text]($link)\""
+		return(eval(Meta.parse(string)))
+		end,
+
 	function setURL(baseURL, apiPath, parameters)
 		q = join(split(strip(parameters), "\n"), "&")
 		# 🍅 ? : expression
@@ -168,8 +139,27 @@ begin
 	        return -1, "$e"
 	    end
 	end,
-	) 
-end
+) 
+
+# ╔═╡ a3304bb2-f890-4b69-9320-18b64d626dd2
+md"""
+### 測試連線 (CN$site)
+- $(ln("Workspace ONE UEM Console", csURL))
+- $(ln("Workspace ONE UEM API Explorer", asURL*"/api/help/#!/apis"))
+"""
+
+# ╔═╡ 085b10a5-1596-40a0-a705-d1088ca4e621
+md"""
+功能項目： $(@bind apiPath00 Select([
+"/api/mdm/devices/litesearch" => "/api/mdm/devices/litesearch (搜尋裝置)",
+"/api/mdm/devices?searchby=SerialNumber&id=就是會找不到" => "/api/mdm/devices?searchby=SerialNumber&id=QQ (不用再給參數，就是會找不到)",
+"/api/mdm/devices" => "/api/mdm/devices (要給參數)"
+])) $br
+其他參數： (請用 Parameter=Value 格式分成不同行輸入，程式會自動以「&」符號合併) $br $(@bind parameters00 TextField((57,5), default = "")) $br
+"""
+
+# ╔═╡ 55ba9af8-122a-4649-904f-585bda70776c
+md"模擬測試? $(@bind dryRun00 CheckBox(default = true)) 執行測試? $(@bind runTest CheckBox())"
 
 # ╔═╡ e7a28bef-e18d-40f7-a8d8-38e2d87b7171
 md"### 執行結果"
@@ -220,14 +210,12 @@ md"模擬測試? $(@bind dryRun01 CheckBox(default = true)) 執行功能項目? 
 md"### 定義函數"
 
 # ╔═╡ 51ccf417-946f-4c53-abae-9ecc3a2d30ea
-begin
-	(
+(
 	# XLSX 套件支援的型別為 Union{Missing, Bool, Float64, Int64, Dates.Date, Dates.DateTime, Dates.Time, String}
 	function isXSLXSupported(type)
 		! occursin("Array", "$type") # 🍅 interpolation
 	end,
-	)
-end
+)
 
 # ╔═╡ 5ac612cd-83a5-4eb5-8d77-a90becabb55a
 md"### 讀取資料"
@@ -339,8 +327,7 @@ md"模擬測試? $(@bind dryRun02 CheckBox(default = true)) 執行功能項目? 
 md"### 定義函數"
 
 # ╔═╡ de4caf52-09ad-40c8-9be7-c0f404779598
-begin
-	(
+(
 	function replaceKeywordWithFieldValue(text, list, df, i)
 		pairs = []
 		for j in list
@@ -370,7 +357,9 @@ begin
 		list = getKeywordList(parameters)
 	
 		for i in 1:nrow(df)
+			# 🍅 access a cell in an DataFrame
 			# println(df[i, "DeviceId"])
+			# println(df[i, :DeviceId])
 			# println(df[i, Symbol("DeviceId")])
 			# println(df[!, "DeviceId"][i])
 			u = setURL(asURL, apiPath, strip(parameters))
@@ -418,9 +407,7 @@ begin
 		expression = @pipe strip(fields) |> replace(_, pairs...) |> split(_, '\n') |> filter(!isempty, _) |> ("Dict(" * join(_, ",") * ")") |> Meta.parse # 🍅 meta programming
 		eval(expression) # 🍅 evaluation
 	end,
-
-	)
-end
+)
 
 # ╔═╡ 4b116a2c-3c9a-47fc-9e91-7668d2f05333
 Print(outputFields02) # 🍅 PlutoUI Live docs
@@ -452,7 +439,6 @@ runCase02 && result02
 md"### 處理資料"
 
 # ╔═╡ 48787c10-5cc0-403a-b0f2-ef1e25db73cb
-md"""
 if runCase02 && ! dryRun02
 	println(outputFields02)
 	hasData02 = ncol(result02) > ncol(df02)
@@ -470,7 +456,6 @@ if runCase02 && ! dryRun02
 		rename!(dfExcel02, getFieldMappingList(outputFields02))
 	end
 end
-"""
 
 # ╔═╡ 73d5db2a-c2ff-41af-849c-b2aa76198d5b
 runCase02 && ! dryRun02 && hasData02 && dfExcel02
@@ -1196,15 +1181,13 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─bc54c11d-18df-4e04-a078-16304fd14c4a
 # ╟─f2490bce-820c-40d7-97d4-187fa29a8d49
 # ╟─78c94534-c233-4786-9bf6-545b8411635b
-# ╟─b27ab7df-8152-4678-8ce5-50fe5e1a665d
-# ╟─e035fb8d-a229-4ecf-b442-82e1892b6057
+# ╟─9949af3e-a30d-4516-b32c-12d959be31ea
+# ╟─3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
 # ╟─a3304bb2-f890-4b69-9320-18b64d626dd2
 # ╟─085b10a5-1596-40a0-a705-d1088ca4e621
 # ╟─55ba9af8-122a-4649-904f-585bda70776c
-# ╟─9949af3e-a30d-4516-b32c-12d959be31ea
-# ╠═3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
 # ╟─e7a28bef-e18d-40f7-a8d8-38e2d87b7171
-# ╠═5efae899-77de-40a1-a6bb-4329b80702ab
+# ╟─5efae899-77de-40a1-a6bb-4329b80702ab
 # ╟─29cf395d-b1fe-4379-b1df-c1aef99a1a80
 # ╟─2fcaa116-9f3b-4e61-9c17-4dbadfe25d5d
 # ╠═5f15aa65-5cd9-45e4-82b3-4d53096f465a
