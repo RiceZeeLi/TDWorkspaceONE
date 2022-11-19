@@ -38,7 +38,7 @@ Rice Li 說：🍅
 """
 
 # ╔═╡ 9bc4054a-f0d0-40f6-9260-881bfebb6cce
-md"教學使用? $(@bind isForTraining CheckBox(default = false))"
+md"教學示範? $(@bind isForTraining CheckBox(default = false)) 🍅 協力模式"
 
 # ╔═╡ 713a287f-98b8-461d-8c95-8493c9796971
 if isForTraining 
@@ -86,10 +86,14 @@ md"### 填入參數"
 # ╔═╡ f2490bce-820c-40d7-97d4-187fa29a8d49
 md"""
 請填入連接 Workspace ONE API 伺服器所需資訊： $br
-Site#: $(@bind site TextField(default = "1768")) $br
-Username: $(@bind username TextField(default = "")) $br
-Password: $(@bind password PasswordField(default = "")) $br
-Tenant Code: $(@bind code PasswordField(default = ""))
+主機：CN $(@bind site TextField(default = "1768")) $br
+帳號： $(@bind username TextField(default = "")) $br
+密碼： $(@bind password PasswordField(default = "")) $br
+租戶代碼： $(@bind codeText PasswordField(default = "")) 或由
+$(@bind codeFile Select([
+	"./Training/TenantCode-02.txt" => "./Training/TenantCode-02.txt",
+	"./Training/TenantCode-01.txt" => "./Training/TenantCode-01.txt"
+])) 讀取
 """
 
 # ╔═╡ 78c94534-c233-4786-9bf6-545b8411635b
@@ -98,11 +102,21 @@ begin
 	csURL = "https://cn$site.awmdm.com"
 	asURL = "https://as$site.awmdm.com"
 	token = base64encode("$username:$password")
-	function ln(text, link)
+	code = isempty(codeText) ? open(codeFile) do f return s = strip(join(readlines(f))) end : codeText
+	("Site#" => site, "csURL" => csURL, "asURL" => asURL, "username" => username)
+end
+
+# ╔═╡ b27ab7df-8152-4678-8ce5-50fe5e1a665d
+md"### 定義函數"
+
+# ╔═╡ e035fb8d-a229-4ecf-b442-82e1892b6057
+begin
+	(
+		function ln(text, link)
 		string="md\"[$text]($link)\""
 		return(eval(Meta.parse(string)))
-	end
-	("Site#" => site, "csURL" => csURL, "asURL" => asURL, "username" => username)
+		end,
+	)
 end
 
 # ╔═╡ a3304bb2-f890-4b69-9320-18b64d626dd2
@@ -130,9 +144,10 @@ md"### 定義函數"
 
 # ╔═╡ 3aa127ab-ad64-49bc-994e-5e3dc2f5f7e7
 begin
-	(
+	( # 🍅 tuple of functions, (f1, f2, f3)
 	function setURL(baseURL, apiPath, parameters)
 		q = join(split(strip(parameters), "\n"), "&")
+		# 🍅 ? : expression
 		return (length(q) > 0) ? (baseURL * apiPath * "?" * q) : (baseURL * apiPath)
 	end,
 	
@@ -153,7 +168,7 @@ begin
 	        return -1, "$e"
 	    end
 	end,
-	) # 🍅 (tuple of functions)
+	) 
 end
 
 # ╔═╡ e7a28bef-e18d-40f7-a8d8-38e2d87b7171
@@ -170,7 +185,7 @@ begin
 			status, body = makeAPICall(HTTP.get, url, headers)
 			with_terminal() do
 				println("status: $status")
-				if status ≠ -1 ≠ # ≠ \ne <tab><tab> \ge <tab><tab> ≥
+				if status ≠ -1 ≠ # 🍅 ≠ \ne <tab><tab> \ge <tab><tab> ≥
 					print("body: ")
 					JSON3.pretty(JSON3.read(body))
 				else
@@ -306,7 +321,7 @@ begin
 	預設輸出檔名02 = "TDWorkspaceONE-Output02.xlsx"
 	
 	md"""
-	### 填入參數
+	### 填入參數 🍅
 	功能項目： $(@bind apiPath02 Select(預設功能清單02)) $br
 	其他參數： $其他參數提示02 $br 
 	$(@bind parameters02 TextField((57,3), default = 預設查詢參數02)) $br
@@ -437,6 +452,7 @@ runCase02 && result02
 md"### 處理資料"
 
 # ╔═╡ 48787c10-5cc0-403a-b0f2-ef1e25db73cb
+md"""
 if runCase02 && ! dryRun02
 	println(outputFields02)
 	hasData02 = ncol(result02) > ncol(df02)
@@ -444,7 +460,7 @@ if runCase02 && ! dryRun02
 		# 將 XSLS 不支持的欄位以 JSON 字串表示
 		for i in names(result02)
 			if ! isXSLXSupported(eltype(result02[!, i]))
-				result02[!, i*"JSON"] = JSON3.write.(result02[!, i])
+				result02[!, i*"JSON"] = JSON3.write.(result02[!, i]) # 🍅 . broadcast
 			end
 		end
 		# 挑選欄位
@@ -454,6 +470,7 @@ if runCase02 && ! dryRun02
 		rename!(dfExcel02, getFieldMappingList(outputFields02))
 	end
 end
+"""
 
 # ╔═╡ 73d5db2a-c2ff-41af-849c-b2aa76198d5b
 runCase02 && ! dryRun02 && hasData02 && dfExcel02
@@ -1179,6 +1196,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─bc54c11d-18df-4e04-a078-16304fd14c4a
 # ╟─f2490bce-820c-40d7-97d4-187fa29a8d49
 # ╟─78c94534-c233-4786-9bf6-545b8411635b
+# ╟─b27ab7df-8152-4678-8ce5-50fe5e1a665d
+# ╟─e035fb8d-a229-4ecf-b442-82e1892b6057
 # ╟─a3304bb2-f890-4b69-9320-18b64d626dd2
 # ╟─085b10a5-1596-40a0-a705-d1088ca4e621
 # ╟─55ba9af8-122a-4649-904f-585bda70776c
@@ -1188,7 +1207,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5efae899-77de-40a1-a6bb-4329b80702ab
 # ╟─29cf395d-b1fe-4379-b1df-c1aef99a1a80
 # ╟─2fcaa116-9f3b-4e61-9c17-4dbadfe25d5d
-# ╟─5f15aa65-5cd9-45e4-82b3-4d53096f465a
+# ╠═5f15aa65-5cd9-45e4-82b3-4d53096f465a
 # ╟─0ae787f5-a7ad-4ac3-9526-f9c990a3ad1c
 # ╟─210e476f-9a76-46a6-9276-0e3caf5ddaa2
 # ╠═51ccf417-946f-4c53-abae-9ecc3a2d30ea
