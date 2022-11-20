@@ -51,6 +51,7 @@ if isForTraining
 1. 說明 VMware Workspace ONE 的應用需求與範例中的關係
 1. 說明使用 Ubuntu 做為納管設備的原因
 1. 說明應用在 VMware Horizon 的可能性
+1. 說明將以 Genie.jl 🧞 結尾 
 1. 一起找「🍅」有問題請隨時打斷，或在線上聊天室發訊息。
 	Julia solves the two language problem by combining the ease of use of Python and R with the speed of C++.
 	
@@ -684,6 +685,7 @@ md"""
 1. [正規表示式 - 維基百科，自由的百科全書](https://zh.m.wikipedia.org/zh-tw/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F)
 1. [JuliaProgrammingForNervousBeginners/Course Notes/Translation/Traditional Chinese at main · ysaereve/JuliaProgrammingForNervousBeginners](https://github.com/ysaereve/JuliaProgrammingForNervousBeginners/tree/main/Course%20Notes/Translation/Traditional%20Chinese)
 1. [Unicode Input · The Julia Language](https://docs.julialang.org/en/v1/manual/unicode-input/)
+1. [How to Build Your First Web App in Julia with Genie.jl 🧞‍♂️ 🍅](https://www.freecodecamp.org/news/how-to-build-web-apps-in-julia/)
 1. [RiceZeeLi/TDWorkspaceONE 🍅](https://github.com/RiceZeeLi/TDWorkspaceONE)
 1. [Julia Taiwan | Facebook 🍅](https://www.facebook.com/groups/JuliaTaiwan) 
 """
@@ -1244,6 +1246,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─22865dbe-2d84-4aea-a481-453645e5468b
 # ╟─3ce1746d-9a62-4db4-ba9e-25c03ed89be0
 # ╟─0b25141b-63bc-4b9a-9b4f-d347ceb3f48a
-# ╟─68a3a478-35b6-4f14-a342-a49e110a2a23
+# ╠═68a3a478-35b6-4f14-a342-a49e110a2a23
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
