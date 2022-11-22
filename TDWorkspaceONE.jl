@@ -520,8 +520,7 @@ md"模擬測試? $(@bind dryRun03 CheckBox(default = true)) 執行功能項目? 
 md"### 定義函數"
 
 # ╔═╡ b768650e-2338-43f7-83c6-9343a79afe15
-begin
-	(
+(
 	function updateDFWithCommandResults(df, apiPath, parameters, headers)
 
 		results = []
@@ -545,8 +544,7 @@ begin
 
 		return df
 	end,
-	)
-end
+)
 
 # ╔═╡ f05c2758-df02-4e89-be91-3f00f4f55472
 md"### 執行指令"
@@ -1246,6 +1244,6 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─22865dbe-2d84-4aea-a481-453645e5468b
 # ╟─3ce1746d-9a62-4db4-ba9e-25c03ed89be0
 # ╟─0b25141b-63bc-4b9a-9b4f-d347ceb3f48a
-# ╠═68a3a478-35b6-4f14-a342-a49e110a2a23
+# ╟─68a3a478-35b6-4f14-a342-a49e110a2a23
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
