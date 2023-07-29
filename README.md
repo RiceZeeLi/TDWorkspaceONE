@@ -33,8 +33,8 @@ Pluto.run()
 ```
 
 ## Troubleshooting Workspace ONE issues - 為工程師寫的問題查找技巧
-[[技巧] 在 Android 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnAndroid.md)
-[[技巧] 在 iOS 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOniOS.md)
-[[技巧] 在 macOS 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnmacOS.md)
-[[技巧] 在 Windows 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnWindows.md)
-[[技巧] 在 Linux 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnLinux.md)
+- [[技巧] 在 Android 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnAndroid.md)
+- [[技巧] 在 iOS 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOniOS.md)
+- [[技巧] 在 macOS 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnmacOS.md)
+- [[技巧] 在 Windows 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnWindows.md)
+- [[技巧] 在 Linux 平台上排除與 Workspace ONE 有關的問題](TroubleshootingWorkspaceONEOnLinux.md)
