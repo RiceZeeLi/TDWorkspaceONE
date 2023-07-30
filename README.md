@@ -31,6 +31,9 @@ status
 using Pluto
 Pluto.run()
 ```
+### 使用 TDWorkspaceONEAPIs.jl
+
+將 TDWorkspaceONEAPIs.jl 下載到本機，並使用 Pluto 開啟 TDWorkspaceONEAPIs.jl 。
 
 ## Troubleshooting Workspace ONE issues - 為工程師寫的問題查找技巧
 
