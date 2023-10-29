@@ -1,0 +1,13 @@
+:
+[ -z "$2" ] && exit
+
+list=`cat $2`
+
+XFS=$IFS
+IFS=","
+echo "$list" | nl -s, -v 2 -ba -n ln -w 1 | while read n v s
+do
+	l=`echo $v | tr ' ' '_'`
+	echo diskutil mount \"$1s$n\"
+done
+IFS=$XFS

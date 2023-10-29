@@ -1,0 +1,5 @@
+:
+while sleep 1
+do
+	pkill -9 mds mds_stores mdsync
+done

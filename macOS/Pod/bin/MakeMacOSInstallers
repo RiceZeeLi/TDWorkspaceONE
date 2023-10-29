@@ -1,0 +1,15 @@
+:
+[ -z "$1" ] && exit
+
+list=`cat $1`
+
+XFS=$IFS
+IFS=","
+echo "$list" | grep -v Pod | while read v s
+do
+	l=`echo $v | tr ' ' '_'`
+	echo \"/Applications/Install macOS $v.app/Contents/Resources/createinstallmedia\" --volume \"/Volumes/$l\" --nointeraction
+	echo touch \"/Volumes/Install macOS $v/.metadata_never_index\"
+	echo sleep 60
+done
+IFS=$XFS

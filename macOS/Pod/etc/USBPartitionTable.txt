@@ -1,0 +1,7 @@
+High Sierra,8GB
+Mojave,8GB
+Catalina,10GB
+Big Sur,14GB
+Monterey,16GB
+Ventura,16GB
+Pod,R
