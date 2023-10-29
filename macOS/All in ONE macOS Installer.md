@@ -53,7 +53,7 @@ do
 done
 ```
 
-另開一個視窗，並在 sudo -i 後，以 root 的身份執行。在製作安裝姆指碟完成後以 ctrl-C 中斷 HungForMDS 的執行。
+另開一個視窗，並在 sudo -i 後，以 root 的身份執行。在製作安裝姆指碟完成後以 ctrl-c 中斷 HungForMDS 的執行。
 
 ```shell
 bin/HuntForVolumeLockers
