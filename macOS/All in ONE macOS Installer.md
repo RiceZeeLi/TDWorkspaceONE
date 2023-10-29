@@ -198,7 +198,7 @@ Finished partitioning on disk2
 檢視產生指令的 Shell Script
 
 ```shell
-more bin/NoIndex-mdutil
+more bin/NoIndex-mdutil-d-E
 ```
 
 ```shell
@@ -215,7 +215,7 @@ done
 檢視將執行的指令
 
 ```shell
-bin/NoIndex-mdutil disk2
+bin/NoIndex-mdutil-d-E disk2
 ```
 
 ```shell
@@ -231,7 +231,7 @@ mdutil -d -E "/Volumes/Pod"
 執行指令
 
 ```shell
-bin/NoIndex-mdutil disk2 | sh -x
+bin/NoIndex-mdutil-d-E disk2 | sh -x
 ```
 
 ```text
