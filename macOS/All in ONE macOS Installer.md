@@ -684,21 +684,21 @@ Volume on disk2s8 renamed to Pod
 
 ### 文件目標
 
-[開機組合鍵 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/102603)
-[如果 Mac 沒有順暢地完成啟動 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/HT204156)
-[Fix MacBook Error 5101F With This Quick Guide - AppleToolBox](https://appletoolbox.com/fix-macbook-error-5101f/)
-[GitHub - MuertoGB/MacBRTool: 💻 MacBRTool is used to update Mac BootROM firmware in EFI mode, adding APFS support.](https://github.com/MuertoGB/MacBRTool)
-[How to create a macOS 13 Ventura installer on a USB drive](https://www.idownloadblog.com/2022/06/10/how-to-create-bootable-usb-installer-macos-ventura/)
+- [開機組合鍵 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/102603)
+- [如果 Mac 沒有順暢地完成啟動 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/HT204156)
+- [Fix MacBook Error 5101F With This Quick Guide - AppleToolBox](https://appletoolbox.com/fix-macbook-error-5101f/)
+- [GitHub - MuertoGB/MacBRTool: 💻 MacBRTool is used to update Mac BootROM firmware in EFI mode, adding APFS support.](https://github.com/MuertoGB/MacBRTool)
+- [How to create a macOS 13 Ventura installer on a USB drive](https://www.idownloadblog.com/2022/06/10/how-to-create-bootable-usb-installer-macos-ventura/)
 
 ### 準備工作
-[MacOS Sierra: Enable/Disable Spotlight Indexing - Technipages](https://www.technipages.com/macos-sierra-enable-disable-spotlight/)
-[macos - Preventing Spotlight from Indexing Files & Folders? - Ask Different](https://apple.stackexchange.com/questions/92784/preventing-spotlight-from-indexing-files-folders)
+- [MacOS Sierra: Enable/Disable Spotlight Indexing - Technipages](https://www.technipages.com/macos-sierra-enable-disable-spotlight/)
+- [macos - Preventing Spotlight from Indexing Files & Folders? - Ask Different](https://apple.stackexchange.com/questions/92784/preventing-spotlight-from-indexing-files-folders)
 
 ### 其他資料
 
-[Apple Regulatory Information](https://regulatoryinfo.apple.com/tw/rfexposure)
-[macOS version history - Wikipedia](https://en.wikipedia.org/wiki/MacOS_version_history)
-[辨識 MacBook Pro 機型 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/HT201300)
-[Mac OS Compatibility Guide by Mac Model](https://eshop.macsales.com/guides/Mac_OS_X_Compatibility)
-[How to find out macOS version using terminal command - nixCraft](https://www.cyberciti.biz/faq/mac-osx-find-tell-operating-system-version-from-bash-prompt/)
-[若無法在外接顯示器上看見 Mac 桌面 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/guide/mac-help/mchlp2615/10.13/mac/10.13)
+- [Apple Regulatory Information](https://regulatoryinfo.apple.com/tw/rfexposure)
+- [macOS version history - Wikipedia](https://en.wikipedia.org/wiki/MacOS_version_history)
+- [辨識 MacBook Pro 機型 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/HT201300)
+- [Mac OS Compatibility Guide by Mac Model](https://eshop.macsales.com/guides/Mac_OS_X_Compatibility)
+- [How to find out macOS version using terminal command - nixCraft](https://www.cyberciti.biz/faq/mac-osx-find-tell-operating-system-version-from-bash-prompt/)
+- [若無法在外接顯示器上看見 Mac 桌面 - Apple 支援 (台灣)](https://support.apple.com/zh-tw/guide/mac-help/mchlp2615/10.13/mac/10.13)
