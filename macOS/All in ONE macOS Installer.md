@@ -675,7 +675,7 @@ Erasing Disk: 0%... 10%...
 Error erasing disk error number (-69888, 0)
 A error occurred erasing the disk.
 ```
-若出現如上的錯誤訊息，或許可以用 `ls /Volumes`看一下是否有同名的卷冊。
+若出現如上的錯誤訊息，可以用 `ls /Volumes`看一下是否有同名的卷冊。
 
 ### 開機畫面
 
