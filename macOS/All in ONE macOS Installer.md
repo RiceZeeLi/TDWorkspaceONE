@@ -556,7 +556,7 @@ diskutil mount "disk2s8"
 
 ### bin/PartitionUSBFlashDrive
 
-此一外殼腳本用來產生分割姆指碟上的指令。
+此一外殼腳本用來產生分割姆指碟的指令。
 
 檢視產生指令的外殼腳本
 ```shell
