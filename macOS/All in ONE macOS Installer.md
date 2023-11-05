@@ -11,9 +11,9 @@ Apple 提供很方便的「[開機組合鍵](https://support.apple.com/zh-tw/102
 - [Fix MacBook Error 5101F With This Quick Guide - AppleToolBox](https://appletoolbox.com/fix-macbook-error-5101f/)
 - [GitHub - MuertoGB/MacBRTool: 💻 MacBRTool is used to update Mac BootROM firmware in EFI mode, adding APFS support.](https://github.com/MuertoGB/MacBRTool)
 
-我找到了三個 Cruzer Blade 16G, 一個 PNY DUAL 128G 姆指碟, 也下載了六個版本的 macOS (High Sierra, Mojave, Catalina, Big Sur, Monterey, Ventura)。在測試過「[How to create a macOS 13 Ventura installer on a USB drive](https://www.idownloadblog.com/2022/06/10/how-to-create-bootable-usb-installer-macos-ventura/) 」之後我想到是否可以將六個版本的 macOS 都放在同一個安裝姆指碟？
+我找到了三個 Cruzer Blade 16G, 一個 PNY DUAL 128G 姆指碟, 也下載了六個版本的 macOS (High Sierra, Mojave, Catalina, Big Sur, Monterey, Ventura)。在測試過「[How to create a macOS 13 Ventura installer on a USB drive](https://www.idownloadblog.com/2022/06/10/how-to-create-bootable-usb-installer-macos-ventura/) 」之後想到是否可以將六個版本的 macOS 都放在同一個安裝姆指碟？
 
-若可以，那我就可以一次到位安裝我要的 macOS 版本。而且放一些工具及檔案在剩下的姆指碟空間。本份文件提供相關的實作程序及外殼腳本(Shell Script)給有相同需求的朋友參考使用。
+若可以，那就可以一次到位安裝所要的 macOS 版本。而且放一些工具及檔案在剩下的姆指碟空間。本份文件提供相關的實作程序及外殼腳本(Shell Script)給有相同需求的朋友參考使用。
 
 ## 內容摘要
 
