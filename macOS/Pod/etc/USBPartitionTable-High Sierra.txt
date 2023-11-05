@@ -1,0 +1,2 @@
+High Sierra,8GB
+Pod,R

@@ -1,15 +1,29 @@
 :
 [ -z "$1" ] && exit
 
-list=`cat $1`
+list=`cat "$1"`
 
 XFS=$IFS
 IFS=","
 echo "$list" | grep -v Pod | while read v s
 do
-	l=`echo $v | tr ' ' '_'`
-	echo \"/Applications/Install macOS $v.app/Contents/Resources/createinstallmedia\" --volume \"/Volumes/$l\" --nointeraction
-	echo touch \"/Volumes/Install macOS $v/.metadata_never_index\"
+	l=`echo "For $v"`
+	m="Install macOS $v"
+	echo \"/Applications/$m.app/Contents/Resources/createinstallmedia\" --volume \"/Volumes/$l\" --nointeraction
+	echo touch \"/Volumes/$m/.metadata_never_index\"
+	echo sync
 	echo sleep 60
+cat << EOF
+df | grep "Shared Support" | while read x1 x2 x3 x4 x5 x6 x7 x8 x9
+do
+	diskutil unmount force "\$x9"
+done
+
+diskutil list external virtual | grep "(disk image)" | while read x1 z 
+do
+	diskutil eject "\$x1"
+done
+EOF
+	echo diskutil unmount force \"/Volumes/$m\" 
 done
 IFS=$XFS

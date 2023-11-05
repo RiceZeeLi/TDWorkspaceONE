@@ -1,13 +1,18 @@
 :
 [ -z "$2" ] && exit
 
-list=`cat $2`
+list=`cat "$2"`
 
 XFS=$IFS
 IFS=","
 echo "$list" | nl -s, -v 2 -ba -n ln -w 1 | while read n v s
 do
-	l=`echo $v | tr ' ' '_'`
+	if [ "$v" = "Pod" ]
+	then
+		l="$v"
+	else
+		l="For $v"
+	fi
 	echo diskutil rename \"$1s$n\" \"$l\"
 done
 IFS=$XFS
